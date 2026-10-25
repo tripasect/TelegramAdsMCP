@@ -42,7 +42,11 @@ app.get('/sse', async (req, res) => {
   console.log(`[SSE] New connection from ${req.ip}`);
   const { server } = createTelegramAdsServer();
 
-  const transport = new SSEServerTransport('/messages', res);
+  // If client used query param ?key=..., preserve it in the messages endpoint
+  const keyParam = req.query.key as string;
+  const messagesEndpoint = keyParam ? `/messages?key=${encodeURIComponent(keyParam)}` : '/messages';
+
+  const transport = new SSEServerTransport(messagesEndpoint, res);
   transports.set(transport.sessionId, transport);
 
   transport.onclose = () => {
