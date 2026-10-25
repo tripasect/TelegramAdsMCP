@@ -70,6 +70,38 @@ Add the following to your `claude_desktop_config.json`:
 Command: `node /path/to/TelegramAdsMCP/dist/index.js`  
 Environment Variables: `TELEGRAM_ADS_TOKEN=your_token`
 
+### 2. Remote SSE (Cloud / Hosted via Traefik)
+
+The server is hosted and accessible via secure Server-Sent Events (SSE) over HTTPS:
+
+- **SSE URL**: `https://telegram-ads-mcp.blipmatch.social/sse?key=YOUR_MCP_AUTH_KEY`
+- **Healthcheck**: `https://telegram-ads-mcp.blipmatch.social/health`
+
+#### Client Configuration (for Remote Agent):
+```json
+{
+  "mcpServers": {
+    "telegram-ads-cloud": {
+      "url": "https://telegram-ads-mcp.blipmatch.social/sse?key=YOUR_MCP_AUTH_KEY"
+    }
+  }
+}
+```
+
+Or using an `Authorization` header if supported by your MCP client:
+```json
+{
+  "mcpServers": {
+    "telegram-ads-cloud": {
+      "url": "https://telegram-ads-mcp.blipmatch.social/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_MCP_AUTH_KEY"
+      }
+    }
+  }
+}
+```
+
 ---
 
 ## Available Tools Reference
