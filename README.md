@@ -47,60 +47,47 @@ TELEGRAM_ADS_TOKEN="your_telegram_ads_bearer_token_here"
 
 ## Connecting to AI Agents / MCP Clients
 
-### Claude Desktop Configuration
+### 1. OpenAI Codex / Modern MCP Clients (Streamable HTTP with Bearer Token)
 
-Add the following to your `claude_desktop_config.json`:
+Codex and modern MCP clients communicate using the standard **Streamable HTTP** transport with HTTP Bearer authentication:
 
+- **Server URL**: `https://telegram-ads-mcp.blipmatch.social/mcp` (or `https://telegram-ads-mcp.blipmatch.social/`)
+- **Transport**: `HTTP` / `Streamable HTTP`
+- **Custom Headers**:
+  - `Authorization: Bearer c5b2900fac3d9eb7e2f26aaa48bb29170dea166596a9529d`
+
+#### Client Configuration Example:
 ```json
 {
   "mcpServers": {
     "telegram-ads": {
-      "command": "node",
-      "args": ["/Users/tripasect/Desktop/TelegramAdsMCP/dist/index.js"],
-      "env": {
-        "TELEGRAM_ADS_TOKEN": "YOUR_TELEGRAM_ADS_ACCESS_TOKEN"
+      "url": "https://telegram-ads-mcp.blipmatch.social/mcp",
+      "headers": {
+        "Authorization": "Bearer c5b2900fac3d9eb7e2f26aaa48bb29170dea166596a9529d"
       }
     }
   }
 }
 ```
 
-### Cursor / Windsurf / Custom Agent Runners
+### 2. Claude Desktop / Legacy SSE Clients
 
-Command: `node /path/to/TelegramAdsMCP/dist/index.js`  
-Environment Variables: `TELEGRAM_ADS_TOKEN=your_token`
+For clients that use legacy Server-Sent Events (SSE):
 
-### 2. Remote SSE (Cloud / Hosted via Traefik)
-
-The server is hosted and accessible via secure Server-Sent Events (SSE) over HTTPS:
-
-- **SSE URL**: `https://telegram-ads-mcp.blipmatch.social/sse?key=YOUR_MCP_AUTH_KEY`
+- **SSE URL**: `https://telegram-ads-mcp.blipmatch.social/sse?key=c5b2900fac3d9eb7e2f26aaa48bb29170dea166596a9529d`
 - **Healthcheck**: `https://telegram-ads-mcp.blipmatch.social/health`
 
-#### Client Configuration (for Remote Agent):
 ```json
 {
   "mcpServers": {
-    "telegram-ads-cloud": {
-      "url": "https://telegram-ads-mcp.blipmatch.social/sse?key=YOUR_MCP_AUTH_KEY"
+    "telegram-ads-sse": {
+      "url": "https://telegram-ads-mcp.blipmatch.social/sse?key=c5b2900fac3d9eb7e2f26aaa48bb29170dea166596a9529d"
     }
   }
 }
 ```
 
-Or using an `Authorization` header if supported by your MCP client:
-```json
-{
-  "mcpServers": {
-    "telegram-ads-cloud": {
-      "url": "https://telegram-ads-mcp.blipmatch.social/sse",
-      "headers": {
-        "Authorization": "Bearer YOUR_MCP_AUTH_KEY"
-      }
-    }
-  }
-}
-```
+### 3. Local stdio (Direct Process Execution)
 
 ---
 
