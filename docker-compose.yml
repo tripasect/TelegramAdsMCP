@@ -1,0 +1,30 @@
+services:
+  telegram-ads-mcp:
+    build: .
+    container_name: telegram-ads-mcp
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - TELEGRAM_ADS_TOKEN=${TELEGRAM_ADS_TOKEN}
+      - MCP_AUTH_KEY=${MCP_AUTH_KEY}
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      # HTTP (Redirect to HTTPS)
+      - "traefik.http.routers.telegram-ads-http.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.telegram-ads-http.entrypoints=web"
+      - "traefik.http.routers.telegram-ads-http.middlewares=telegram-ads-redirect-https"
+      - "traefik.http.middlewares.telegram-ads-redirect-https.redirectscheme.scheme=https"
+      # HTTPS
+      - "traefik.http.routers.telegram-ads.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.telegram-ads.entrypoints=websecure"
+      - "traefik.http.routers.telegram-ads.tls=true"
+      - "traefik.http.routers.telegram-ads.tls.certresolver=le"
+      # Load balancer service
+      - "traefik.http.services.telegram-ads.loadbalancer.server.port=3000"
+
+networks:
+  traefik:
+    external: true
